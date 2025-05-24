@@ -1,0 +1,27 @@
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import authRoutes from './routes/auth.routes';
+import { errorHandler } from './middlewares/error.middleware';
+import morgan from 'morgan';
+import { ENVS } from './config/constants';
+
+const app = express();
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(cors({
+    origin: ENVS.FRONTEND_URL as string,
+    credentials: true
+}));
+app.use(morgan('dev'));
+
+// Routes
+app.use('/api/auth', authRoutes);
+
+// Error handling middleware
+app.use(errorHandler);
+
+export default app;
