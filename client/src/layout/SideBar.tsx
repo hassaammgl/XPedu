@@ -1,5 +1,8 @@
 
-import { BookOpen, Trophy, Users, Settings, User, LayoutDashboard, Gamepad2, Target } from "lucide-react"
+import {
+    BookOpen, Settings,
+    User, LayoutDashboard, Target
+} from "lucide-react"
 import { NavLink, useLocation } from "react-router"
 
 import {
@@ -33,21 +36,7 @@ const menuItems = [
         url: "/quests",
         icon: Target,
     },
-    {
-        title: "Games",
-        url: "/games",
-        icon: Gamepad2,
-    },
-    {
-        title: "Leaderboard",
-        url: "/leaderboard",
-        icon: Trophy,
-    },
-    {
-        title: "Community",
-        url: "/community",
-        icon: Users,
-    },
+   
 ]
 
 const settingsItems = [
@@ -67,15 +56,15 @@ function AppSidebar() {
     const location = useLocation()
 
     return (
-        <Sidebar>
+        <Sidebar >
             <SidebarHeader>
                 <div className="flex items-center gap-2 px-2 py-2">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-r from-solo-blue to-solo-purple flex items-center justify-center text-white font-bold text-xl border-glow">
-                        L
+                        X
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-bold text-sm text-gradient">Leveling Up</span>
-                        <span className="font-bold text-xs text-gradient">Academy</span>
+                        <span className="font-bold text-sm text-gradient">Xpedu</span>
+                        <span className="font-light text-xs text-gradient">Game based LMS</span>
                     </div>
                 </div>
             </SidebarHeader>
@@ -89,7 +78,7 @@ function AppSidebar() {
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild isActive={location.pathname === item.url}>
                                         <NavLink to={item.url}>
-                                            <item.icon />
+                                            <item.icon className="text-sky-500" />
                                             <span>{item.title}</span>
                                         </NavLink>
                                     </SidebarMenuButton>
@@ -107,7 +96,7 @@ function AppSidebar() {
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild isActive={location.pathname === item.url}>
                                         <NavLink to={item.url}>
-                                            <item.icon />
+                                            <item.icon className="text-sky-500" />
                                             <span>{item.title}</span>
                                         </NavLink>
                                     </SidebarMenuButton>

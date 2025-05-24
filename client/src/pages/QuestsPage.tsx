@@ -1,11 +1,11 @@
 import AppLayout from "@/layout/AppLayout"
 
-const SettingsPage = () => {
+const QuestsPage = () => {
     return (
         <AppLayout>
-            SettingsPage
+            QuestsPage
         </AppLayout>
     )
 }
 
-export default SettingsPage
+export default QuestsPage

@@ -1,7 +1,7 @@
 
 const LoginPage = () => {
     return (
-        <div>LoginPage</div>
+        <div className="w-full h-screen ">LoginPage</div>
     )
 }
 

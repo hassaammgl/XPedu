@@ -5,6 +5,9 @@ import ProfilePage from "@/pages/ProfilePage";
 import SettingsPage from "@/pages/SettingsPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import HomePage from "@/pages/HomePage";
+import DashboardPage from "@/pages/DashboardPage";
+import CoursesPage from "@/pages/CoursesPage";
+import QuestsPage from "@/pages/QuestsPage";
 
 
 const routes = [
@@ -31,6 +34,22 @@ const routes = [
     {
         path: "/settings",
         element: <SettingsPage />,
+    },
+    {
+        path: "/dashboard",
+        element: <DashboardPage />,
+    },
+    {
+        path: "/courses",
+        element: <CoursesPage />,
+    },
+    {
+        path: "/courses",
+        element: <CoursesPage />,
+    },
+    {
+        path: "/quests",
+        element: <QuestsPage />,
     },
     {
         path: "*",

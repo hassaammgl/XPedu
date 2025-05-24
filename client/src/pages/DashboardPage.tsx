@@ -1,11 +1,11 @@
 import AppLayout from "@/layout/AppLayout"
 
-const SettingsPage = () => {
+const DashboardPage = () => {
     return (
         <AppLayout>
-            SettingsPage
+            DaAppLayoutge
         </AppLayout>
     )
 }
 
-export default SettingsPage
+export default DashboardPage
