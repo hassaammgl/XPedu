@@ -1,136 +1,72 @@
-import User from '../models/user.model';
-import jwt from 'jsonwebtoken';
-import { ENVS } from '../config/constants';
-// import type { IUser } from '../models/user.model';
+import { AuthService } from '../services/auth.services';
+import { TokenService } from '../utils/Jwt';
+import { ApiResponse } from '../utils/ApiResponse';
 
-// Generate JWT token
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET , {
-        expiresIn: '30d'
-    });
-};
-
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
-
-export const registerUser = async (req, res) => {
-    const { name, email, password } = req.body;
-
-    // Input validation
-    if (!name || !email || !password) {
-        return res.status(400).json({ message: 'Please fill all fields' });
-    }
-
+/**
+ * @desc    Register new user
+ * @route   POST /api/auth/register
+ * @access  Public
+ */
+export const registerUser = async (req, res, next) => {
     try {
-        // Check if user exists
-        const userExists = await User.findOne({ email });
+        const { user, token } = await AuthService.register(req.body);
+        TokenService.setCookie(res, token);
 
-        if (userExists) {
-            return res.status(400).json({ message: 'User already exists' });
-        }
-
-        // Create user
-        const user = await User.create({
-            name,
-            email,
-            password // Make sure your User model hashes the password before saving
+        return ApiResponse.success(res, {
+            statusCode: 201,
+            message: 'User registered successfully',
+            data: { user, token }
         });
-
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid user data' });
-        }
-
-        const token = generateToken(user?._id?.toString());
-
-        // Set cookie
-        res.cookie('jwt', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-        });
-
-        // Return response without password
-        return res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            token
-        });
-
     } catch (error) {
-        console.error('Registration error:', error);
-
-        // Handle specific errors
-        if (error instanceof Error) {
-            if (error.name === 'ValidationError') {
-                return res.status(400).json({ message: error.message });
-            }
-        }
-
-        return res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 };
 
-// @desc    Authenticate user & get token
-// @route   POST /api/auth/login
-// @access  Public
-export const loginUser = async (req, res) => {
-    const { email, password } = req.body;
-
+/**
+ * @desc    Authenticate user & get token
+ * @route   POST /api/auth/login
+ * @access  Public
+ */
+export const loginUser = async (req, res, next) => {
     try {
-        const user = await User.findOne({ email });
+        const { email, password } = req.body;
+        const { user, token } = await AuthService.login(email, password);
+        
+        TokenService.setCookie(res, token);
 
-        if (user && (await user.matchPassword(password))) {
-            const token = generateToken(user?._id?.toString());
-
-            res.cookie('jwt', token, {
-                httpOnly: true,
-                secure: ENVS.NODE_ENV !== 'development',
-                sameSite: 'strict',
-                maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-            });
-
-            res.json({
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                token
-            });
-        } else {
-            res.status(401).json({ message: 'Invalid email or password' });
-        }
+        return ApiResponse.success(res, {
+            message: 'Logged in successfully',
+            data: { user, token }
+        });
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 };
 
-// @desc    Logout user / clear cookie
-// @route   POST /api/auth/logout
-// @access  Private
+/**
+ * @desc    Logout user / clear cookie
+ * @route   POST /api/auth/logout
+ * @access  Private
+ */
 export const logoutUser = (req, res) => {
-    res.cookie('jwt', '', {
-        httpOnly: true,
-        expires: new Date(0)
+    TokenService.clearCookie(res);
+    return ApiResponse.success(res, {
+        message: 'Logged out successfully'
     });
-    res.status(200).json({ message: 'Logged out successfully' });
 };
 
-// @desc    Get user profile
-// @route   GET /api/auth/profile
-// @access  Private
-export const getUserProfile = async (req, res) => {
+/**
+ * @desc    Get user profile
+ * @route   GET /api/auth/profile
+ * @access  Private
+ */
+export const getUserProfile = async (req, res, next) => {
     try {
-        const user = await User.findById({ _id: req.user._id }).select('-password');
-
-        if (user) {
-            res.json(user);
-        } else {
-            res.status(404).json({ message: 'User not found' });
-        }
+        const user = await AuthService.getProfile(req.user._id);
+        return ApiResponse.success(res, {
+            data: { user }
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        next(error);
     }
 };

@@ -1,5 +1,6 @@
 import { ENVS } from '../config/constants';
 import { AppError } from '../utils/AppError';
+import { ApiResponse } from '../utils/ApiResponse';
 
 export const errorHandler = (err, req, res, next) => {
     let statusCode = 500;
@@ -22,20 +23,20 @@ export const errorHandler = (err, req, res, next) => {
         return next(err);
     }
 
-    if (ENVS.NODE_ENV !== 'test') {
+    // Log error in development and test environments
+    if (ENVS.NODE_ENV !== 'production') {
         console.error(`[${new Date().toISOString()}] Error:`, {
             message: err.message,
             stack: err.stack,
             path: req.path,
-            method: req.method
+            method: req.method,
+            body: req.body
         });
     }
 
-    res.status(statusCode).json({
-        success: false,
-        error: {
-            message,
-            ...(stack && { stack })
-        }
+    return ApiResponse.error(res, {
+        statusCode,
+        message,
+        ...(stack && ENVS.NODE_ENV !== 'production' && { stack })
     });
 };

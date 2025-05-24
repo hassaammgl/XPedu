@@ -4,7 +4,6 @@
 	"type": "module",
 	"private": true,
 	"dependencies": {
-		"@types/joi": "^17.2.3",
 		"argon2": "^0.43.0",
 		"colors": "^1.4.0",
 		"cookie-parser": "^1.4.7",
