@@ -14,11 +14,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ENVS.FRONTEND_URL as string,
+    origin: ENVS.FRONTEND_URL,
     credentials: true,
   })
 );
-app.use(morgan(":remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms"));
+app.use(
+  morgan(
+    ":remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms"
+  )
+);
 
 // Routes
 app.use("/api/auth", authRoutes);

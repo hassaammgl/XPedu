@@ -4,7 +4,7 @@ import { ENVS } from './constants';
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(ENVS.MONGO_URI as string);
+        const conn = await mongoose.connect(ENVS.MONGO_URI);
         console.log(colors.cyan(`MongoDB Connected: ${conn?.connection?.db?.databaseName}`));
     } catch (error) {
         console.log(error);

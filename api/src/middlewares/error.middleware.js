@@ -1,13 +1,7 @@
-import type { Request, Response, NextFunction } from 'express';
 import { ENVS } from '../config/constants';
 import { AppError } from '../utils/AppError';
 
-export const errorHandler = (
-    err: Error | AppError,
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const errorHandler = (err, req, res, next) => {
     let statusCode = 500;
     let message = 'Internal Server Error';
     let stack = ENVS.NODE_ENV === 'production' ? undefined : err.stack;

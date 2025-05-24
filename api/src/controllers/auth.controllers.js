@@ -1,12 +1,11 @@
-import type { Request, Response } from 'express';
 import User from '../models/user.model';
 import jwt from 'jsonwebtoken';
 import { ENVS } from '../config/constants';
 // import type { IUser } from '../models/user.model';
 
 // Generate JWT token
-const generateToken = (id: string | undefined) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET as string, {
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET , {
         expiresIn: '30d'
     });
 };
@@ -15,16 +14,7 @@ const generateToken = (id: string | undefined) => {
 // @route   POST /api/auth/register
 // @access  Public
 
-interface RegisterUserBody {
-    name: string;
-    email: string;
-    password: string;
-}
-
-export const registerUser = async (
-    req: Request<{}, {}, RegisterUserBody>,
-    res: Response
-) => {
+export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     // Input validation
@@ -86,7 +76,7 @@ export const registerUser = async (
 // @desc    Authenticate user & get token
 // @route   POST /api/auth/login
 // @access  Public
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -120,7 +110,7 @@ export const loginUser = async (req: Request, res: Response) => {
 // @desc    Logout user / clear cookie
 // @route   POST /api/auth/logout
 // @access  Private
-export const logoutUser = (req: Request, res: Response) => {
+export const logoutUser = (req, res) => {
     res.cookie('jwt', '', {
         httpOnly: true,
         expires: new Date(0)
@@ -131,9 +121,9 @@ export const logoutUser = (req: Request, res: Response) => {
 // @desc    Get user profile
 // @route   GET /api/auth/profile
 // @access  Private
-export const getUserProfile = async (req: Request, res: Response) => {
+export const getUserProfile = async (req, res) => {
     try {
-        const user = await User.findById((req as any).user._id).select('-password');
+        const user = await User.findById({ _id: req.user._id }).select('-password');
 
         if (user) {
             res.json(user);

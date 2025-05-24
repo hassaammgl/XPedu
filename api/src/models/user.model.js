@@ -1,14 +1,8 @@
 import mongoose, { Document } from 'mongoose';
 import argon2 from 'argon2';
 
-export interface IUser extends Document {
-    name: string;
-    email: string;
-    password: string;
-    matchPassword: (enteredPassword: string) => Promise<boolean>;
-}
 
-const userSchema = new mongoose.Schema<IUser>({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -25,7 +19,7 @@ const userSchema = new mongoose.Schema<IUser>({
 });
 
 // Hash password before saving
-userSchema.pre<IUser>('save', async function (next) {
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();
     }
@@ -38,12 +32,12 @@ userSchema.pre<IUser>('save', async function (next) {
             parallelism: 1
         });
         next();
-    } catch (err: any) {
+    } catch (err) {
         next(err);
     }
 });
 
-userSchema.methods.matchPassword = async function (enteredPassword: string) {
+userSchema.methods.matchPassword = async function (enteredPassword) {
     try {
         return await argon2.verify(this.password, enteredPassword);
     } catch (err) {
@@ -52,5 +46,5 @@ userSchema.methods.matchPassword = async function (enteredPassword: string) {
     }
 };
 
-const User = mongoose.model<IUser>('User', userSchema);
+const User = mongoose.model('User', userSchema);
 export default User;

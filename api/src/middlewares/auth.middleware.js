@@ -1,26 +1,16 @@
-import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model';
 import { ENVS } from '../config/constants';
 
-// Extend the Request interface to include the user property
-declare global {
-    namespace Express {
-        interface Request {
-            user?: any;
-        }
-    }
-}
 
-export const protect = async (req: Request, res: Response, next: NextFunction) => {
+export const protect = async (req, res, next) => {
     let token;
 
-    // Get token from cookies
     token = req.cookies.jwt;
 
     if (token) {
         try {
-            const decoded = jwt.verify(token, ENVS.JWT_SECRET as string) as { id: string };
+            const decoded = jwt.verify(token, ENVS.JWT_SECRET);
 
             req.user = await User.findById(decoded.id).select('-password');
             next();
