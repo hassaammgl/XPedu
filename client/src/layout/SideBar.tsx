@@ -1,10 +1,10 @@
 
 import {
     BookOpen, Settings,
-    User, LayoutDashboard, Target
+    User, LayoutDashboard, Target,
+    LogOutIcon
 } from "lucide-react"
-import { NavLink, useLocation } from "react-router"
-
+import { NavLink, useLocation, useNavigate } from "react-router"
 import {
     Sidebar,
     SidebarContent,
@@ -18,8 +18,11 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAuth } from "@/store/auth"
+import { Button } from "@/components/ui/button"
+import { useToast } from "@/hooks/useToast"
+import type { AxiosError } from "axios"
 
-// Menu items
 const menuItems = [
     {
         title: "Dashboard",
@@ -36,7 +39,7 @@ const menuItems = [
         url: "/quests",
         icon: Target,
     },
-   
+
 ]
 
 const settingsItems = [
@@ -54,12 +57,30 @@ const settingsItems = [
 
 function AppSidebar() {
     const location = useLocation()
+    const { user, logout } = useAuth()
+    const { error, success } = useToast()
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            success("Good bye!");
+            navigate("/");
+        } catch (err) {
+            const message =
+                (err as AxiosError<{ message?: string }>)?.response?.data
+                    ?.message ??
+                (err as Error)?.message ??
+                "Logout failed 😵";
+            error(message);
+        }
+    }
 
     return (
         <Sidebar >
             <SidebarHeader>
                 <div className="flex items-center gap-2 px-2 py-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-solo-blue to-solo-purple flex items-center justify-center text-white font-bold text-xl border-glow">
+                    <div className="w-8 h-8 text-blue-500 rounded-full bg-gradient-to-r from-solo-blue to-solo-purple flex items-center justify-center font-bold text-xl border-glow">
                         X
                     </div>
                     <div className="flex flex-col">
@@ -68,7 +89,6 @@ function AppSidebar() {
                     </div>
                 </div>
             </SidebarHeader>
-
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel>Navigation</SidebarGroupLabel>
@@ -87,7 +107,6 @@ function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-
                 <SidebarGroup>
                     <SidebarGroupLabel>Account</SidebarGroupLabel>
                     <SidebarGroupContent>
@@ -106,17 +125,26 @@ function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-
             <SidebarFooter>
                 <div className="flex items-center gap-2 px-2 py-2">
                     <Avatar className="h-8 w-8 border border-solo-blue/50">
                         <AvatarImage src="https://github.com/shadcn.png" alt="@user" />
-                        <AvatarFallback className="bg-solo-muted text-solo-blue">UN</AvatarFallback>
+                        <AvatarFallback className="bg-solo-muted text-solo-blue">{user?.name.slice(0, 2)}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-sm font-medium truncate">User Name</span>
-                        <span className="text-xs text-muted-foreground truncate">Level 5 • 750 XP</span>
+                        <span className="text-sm font-medium truncate">{user?.name}</span>
+                        <span className="text-xs text-muted-foreground truncate">Level {user?.level} • {user?.xp} XP</span>
                     </div>
+                </div>
+                <div className="flex items-center gap-2 px-2 py-2">
+                    {/* <Button onClick={handleLogout} className="w-full flex" variant={"ghost"}>
+                        <LogOutIcon className="text-red-500" />
+                        <span>Logout</span>
+                    </Button> */}
+                    <SidebarMenuButton onClick={handleLogout} className="w-full flex" variant={"ghost"}>
+                        <LogOutIcon className="text-red-500" />
+                        <span>Logout</span>
+                    </SidebarMenuButton>
                 </div>
             </SidebarFooter>
         </Sidebar>

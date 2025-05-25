@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const argon2 = require('argon2');
+import mongoose from 'mongoose';
+import argon2 from 'argon2';
 
 const TEN_SHADOWS = [
   { name: "Igris", type: "Knight", strength: 85, obtainedAtLevel: 5 },
@@ -18,11 +18,17 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true, select: false },
+  refreshToken: { type: String, select: false },
   level: { type: Number, default: 1, min: 1, max: 100 },
   xp: { type: Number, default: 0 },
   rank: {
     type: String,
-    enum: ['E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS', 'Monarch', 'Ruler'],
+    enum: [
+      'E', 'D', 'C',
+      'B', 'A', 'S',
+      'SS', 'SSS', 'Monarch',
+      'Ruler'
+    ],
     default: 'E'
   },
   shadowsUnlocked: [

@@ -24,39 +24,20 @@ export const useAuth = create<AuthState>()(
             isLoading: false,
             error: null,
 
-            login: async (email, password) => {
-                try {
-                    set({ isLoading: true, error: null });
-
-                    const { data } = await axiosInstance.post("/auth/login", {
-                        email,
-                        password,
-                    });
-
-                    set({ user: data.user, isAuthenticated: true });
-                } catch (err: any) {
-                    const errorMessage = getErrorMessage(err);
-                    set({ error: errorMessage });
-                    throw new Error(errorMessage);
-                } finally {
-                    set({ isLoading: false });
-                }
-            },
-
-            signup: async (email, password, username) => {
+            signup: async (email, password, name) => {
                 try {
                     set({ isLoading: true, error: null });
 
                     const { data } = await axiosInstance.post(
-                        "/auth/register",
+                        "/api/auth/register",
                         {
                             email,
                             password,
-                            username,
+                            name,
                         }
                     );
 
-                    set({ user: data.user, isAuthenticated: true });
+                    set({ user: data.data.user, isAuthenticated: true });
                 } catch (err: any) {
                     const errorMessage = getErrorMessage(err);
                     set({ error: errorMessage });
@@ -66,9 +47,30 @@ export const useAuth = create<AuthState>()(
                 }
             },
 
+            login: async (email, password) => {
+                try {
+                    set({ isLoading: true, error: null });
+
+                    const { data } = await axiosInstance.post("/api/auth/login", {
+                        email,
+                        password,
+                    });
+
+                    set({ user: data.data.user, isAuthenticated: true });
+                } catch (err: any) {
+                    const errorMessage = getErrorMessage(err);
+                    set({ error: errorMessage });
+                    throw new Error(errorMessage);
+                } finally {
+                    set({ isLoading: false });
+                }
+            },
+
+
+
             logout: async () => {
                 try {
-                    await axiosInstance.post("/auth/logout");
+                    await axiosInstance.post("/api/auth/logout");
                 } catch (err) {
                     console.error("Logout error:", err);
                 } finally {
@@ -76,6 +78,9 @@ export const useAuth = create<AuthState>()(
                 }
             },
 
+            checkIsAuthenticated: async () => {
+
+            },
 
             clearError: () => set({ error: null }),
         }),

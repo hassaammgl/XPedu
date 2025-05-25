@@ -6,10 +6,17 @@ export interface AppLayoutProps {
 
 
 type AuthUser = {
-    id: string;
+    _id: string;
+    name: string;
     email: string;
-    username: string;
-    role: string;
+    rank: string;
+    level: number;
+    xp: number;
+    mana: number;
+    activeShadows: number;
+    agility: number;
+    strength: number;
+    dailyQuestsCompleted: number;
 };
 
 
@@ -25,6 +32,7 @@ export type AuthState = {
         username: string,
     ) => Promise<void>;
     logout: () => Promise<void>;
+    checkIsAuthenticated: () => Promise<void>;
     clearError: () => void;
 };
 

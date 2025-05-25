@@ -3,6 +3,16 @@ import { AppError } from '../utils/AppError';
 import { TokenService } from '../utils/Jwt';
 
 export class AuthService {
+    static async generateAuthTokens(userId) {
+        const accessToken = TokenService.generateAccessToken(userId);
+        const refreshToken = TokenService.generateRefreshToken(userId);
+
+        // Save refresh token to user
+        await User.findByIdAndUpdate(userId, { refreshToken });
+
+        return { accessToken, refreshToken };
+    }
+
     static async register(userData) {
         const { email } = userData;
 
@@ -16,7 +26,7 @@ export class AuthService {
             throw new AppError('Invalid user data', 400);
         }
 
-        const token = TokenService.generateToken(user._id.toString());
+        const tokens = await this.generateAuthTokens(user._id.toString());
 
         return {
             user: {
@@ -24,7 +34,7 @@ export class AuthService {
                 name: user.name,
                 email: user.email
             },
-            token
+            ...tokens
         };
     }
 
@@ -35,7 +45,7 @@ export class AuthService {
             throw new AppError('Invalid email or password', 401);
         }
 
-        const token = TokenService.generateToken(user._id.toString());
+        const tokens = await this.generateAuthTokens(user._id.toString());
 
         return {
             user: {
@@ -43,12 +53,43 @@ export class AuthService {
                 name: user.name,
                 email: user.email
             },
-            token
+            ...tokens
         };
     }
 
+    static async refreshToken(refreshToken) {
+        if (!refreshToken) {
+            throw new AppError('Refresh token is required', 401);
+        }
+
+        // Verify refresh token
+        const decoded = TokenService.verifyRefreshToken(refreshToken);
+        
+        // Find user with this refresh token
+        const user = await User.findById(decoded.id).select('+refreshToken');
+        if (!user || user.refreshToken !== refreshToken) {
+            throw new AppError('Invalid refresh token', 401);
+        }
+
+        // Generate new tokens
+        const tokens = await this.generateAuthTokens(user._id.toString());
+
+        return {
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email
+            },
+            ...tokens
+        };
+    }
+
+    static async logout(userId) {
+        await User.findByIdAndUpdate(userId, { refreshToken: null });
+    }
+
     static async getProfile(userId) {
-        const user = await User.findById(userId).select('-password');
+        const user = await User.findById(userId).select('-password -refreshToken');
         
         if (!user) {
             throw new AppError('User not found', 404);

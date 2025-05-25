@@ -3,11 +3,13 @@ import {
     registerUser,
     loginUser,
     logoutUser,
-    getUserProfile
+    getUserProfile,
+    refreshToken
 } from '../controllers/auth.controllers';
 import { protect } from '../middlewares/auth.middleware';
 import { validateRequest } from '../middlewares/validation.middleware';
 import { registerSchema, loginSchema } from '../validations/auth.validation';
+import { authLimiter, refreshTokenLimiter } from '../middlewares/rateLimiter.middleware';
 
 const router = Router();
 
@@ -16,18 +18,36 @@ const router = Router();
  * @desc    Register a new user
  * @access  Public
  */
-router.post('/register', validateRequest(registerSchema), registerUser);
+router.post('/register', 
+    authLimiter,
+    validateRequest(registerSchema), 
+    registerUser
+);
 
 /**
  * @route   POST /api/auth/login
- * @desc    Authenticate user & get token
+ * @desc    Authenticate user & get tokens
  * @access  Public
  */
-router.post('/login', validateRequest(loginSchema), loginUser);
+router.post('/login', 
+    authLimiter,
+    validateRequest(loginSchema), 
+    loginUser
+);
+
+/**
+ * @route   POST /api/auth/refresh
+ * @desc    Refresh access token using refresh token
+ * @access  Public
+ */
+router.post('/refresh', 
+    refreshTokenLimiter,
+    refreshToken
+);
 
 /**
  * @route   POST /api/auth/logout
- * @desc    Logout user and clear cookie
+ * @desc    Logout user and clear cookies
  * @access  Private
  */
 router.post('/logout', protect, logoutUser);

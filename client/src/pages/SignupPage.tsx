@@ -29,6 +29,7 @@ const SignupPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            console.table({ email, password, name });
             await signup(email, password, name);
             success("Account created successfully! 🎉");
             navigate("/home");
