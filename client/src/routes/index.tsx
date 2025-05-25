@@ -20,7 +20,11 @@ const routes = [
 	},
 	{
 		path: "/home",
-		element: <HomePage />,
+		element: (
+			<AuthGuard>
+				<HomePage />
+			</AuthGuard>
+		),
 	},
 	{
 		path: "/login",
