@@ -1,4 +1,3 @@
-
 import {
     BookOpen, Settings,
     User, LayoutDashboard, Target,
@@ -17,9 +16,8 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/store/auth"
-import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/useToast"
 import type { AxiosError } from "axios"
 
@@ -128,7 +126,6 @@ function AppSidebar() {
             <SidebarFooter>
                 <div className="flex items-center gap-2 px-2 py-2">
                     <Avatar className="h-8 w-8 border border-solo-blue/50">
-                        <AvatarImage src="https://github.com/shadcn.png" alt="@user" />
                         <AvatarFallback className="bg-solo-muted text-solo-blue">{user?.name.slice(0, 2)}</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col flex-1 min-w-0">
@@ -137,10 +134,6 @@ function AppSidebar() {
                     </div>
                 </div>
                 <div className="flex items-center gap-2 px-2 py-2">
-                    {/* <Button onClick={handleLogout} className="w-full flex" variant={"ghost"}>
-                        <LogOutIcon className="text-red-500" />
-                        <span>Logout</span>
-                    </Button> */}
                     <SidebarMenuButton onClick={handleLogout} className="w-full flex" variant={"ghost"}>
                         <LogOutIcon className="text-red-500" />
                         <span>Logout</span>

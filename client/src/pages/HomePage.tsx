@@ -5,6 +5,7 @@ import LeaderboardSection from "@/components/Home/LeaderboardSection"
 import QuestsSection from "@/components/Home/QuestsSection"
 import { Footer } from "@/layout/Footer"
 import Navbar from "@/layout/Navbar"
+import NotificationPanel from "@/components/shared/NotificationPanel"
 
 const HomePage = () => {
     return (
@@ -15,6 +16,7 @@ const HomePage = () => {
             <GamificationSection />
             <QuestsSection />
             <LeaderboardSection />
+            <NotificationPanel message="You are selected as a participant in the upcoming challenge!" />
             <Footer />
         </div>
     )
