@@ -1,6 +1,7 @@
 import User from '../models/user.model';
 import { AppError } from '../utils/AppError';
 import { TokenService } from '../utils/Jwt';
+import { UserDto } from "../utils/UserDTO.js"
 
 export class AuthService {
     static async generateAuthTokens(userId) {
@@ -29,18 +30,14 @@ export class AuthService {
         const tokens = await this.generateAuthTokens(user._id.toString());
 
         return {
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email
-            },
+            user: new UserDto(user),
             ...tokens
         };
     }
 
     static async login(email, password) {
         const user = await User.findOne({ email }).select('+password');
-        
+
         if (!user || !(await user.verifyPassword(password))) {
             throw new AppError('Invalid email or password', 401);
         }
@@ -48,11 +45,7 @@ export class AuthService {
         const tokens = await this.generateAuthTokens(user._id.toString());
 
         return {
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email
-            },
+            user: new UserDto(user),
             ...tokens
         };
     }
@@ -64,7 +57,7 @@ export class AuthService {
 
         // Verify refresh token
         const decoded = TokenService.verifyRefreshToken(refreshToken);
-        
+
         // Find user with this refresh token
         const user = await User.findById(decoded.id).select('+refreshToken');
         if (!user || user.refreshToken !== refreshToken) {
@@ -75,22 +68,18 @@ export class AuthService {
         const tokens = await this.generateAuthTokens(user._id.toString());
 
         return {
-            user: {
-                _id: user._id,
-                name: user.name,
-                email: user.email
-            },
+            user: new UserDto(user),
             ...tokens
         };
     }
 
     static async logout(userId) {
-        await User.findByIdAndUpdate(userId, { refreshToken: null });
+        await User.findByIdAndUpdate({_id:userId}, { refreshToken: null });
     }
 
     static async getProfile(userId) {
-        const user = await User.findById(userId).select('-password -refreshToken');
-        
+        const user = await User.findById({ _id: userId }).select('-password -refreshToken');
+
         if (!user) {
             throw new AppError('User not found', 404);
         }
