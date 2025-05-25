@@ -28,7 +28,7 @@ const LoginPage = () => {
 		try {
 			await login(email, password);
 			success("You're in! 🎉");
-			navigate("/home");
+			navigate("/");
 		} catch (err) {
 			const message =
 				(err as AxiosError<{ message?: string }>)?.response?.data

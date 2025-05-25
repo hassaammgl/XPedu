@@ -1,4 +1,4 @@
-import { redirect } from "react-router";
+// import { redirect } from "react-router";
 import LoginPage from "@/pages/LoginPage";
 import SignupPage from "@/pages/SignupPage";
 import ProfilePage from "@/pages/ProfilePage";
@@ -15,24 +15,20 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 const routes = [
 	{
-		path: "/",
-		loader: () => redirect("/login"),
-	},
-	{
-		path: "/home",
-		element: (
-			<AuthGuard>
-				<HomePage />
-			</AuthGuard>
-		),
-	},
-	{
 		path: "/login",
 		element: <LoginPage />,
 	},
 	{
 		path: "/signup",
 		element: <SignupPage />,
+	},
+	{
+		path: "/",
+		element: (
+			<AuthGuard>
+				<HomePage />
+			</AuthGuard>
+		),
 	},
 	{
 		path: "/profile",
