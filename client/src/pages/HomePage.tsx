@@ -16,7 +16,7 @@ const HomePage = () => {
             <GamificationSection />
             <QuestsSection />
             <LeaderboardSection />
-            <NotificationPanel message="You are selected as a participant in the upcoming challenge!" />
+            <NotificationPanel onAccept={() => { }} onClose={() => { }} message="You are selected as a participant in the upcoming challenge!" isOpen />
             <Footer />
         </div>
     )

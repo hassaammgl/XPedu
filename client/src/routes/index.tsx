@@ -8,6 +8,7 @@ import HomePage from "@/pages/HomePage";
 import DashboardPage from "@/pages/DashboardPage";
 import CoursesPage from "@/pages/CoursesPage";
 import QuestsPage from "@/pages/QuestsPage";
+import { AuthGuard } from "@/routes/AuthGuard";
 
 
 const routes = [
@@ -29,27 +30,36 @@ const routes = [
     },
     {
         path: "/profile",
-        element: <ProfilePage />,
+        element: (
+            <AuthGuard>
+                <ProfilePage />
+            </AuthGuard>
+        ),
     },
     {
         path: "/settings",
-        element: <SettingsPage />,
+        element: <AuthGuard>
+            <SettingsPage />
+        </AuthGuard>,
     },
     {
         path: "/dashboard",
-        element: <DashboardPage />,
+        element: <AuthGuard>
+            <DashboardPage />
+        </AuthGuard>,
     },
     {
         path: "/courses",
-        element: <CoursesPage />,
-    },
-    {
-        path: "/courses",
-        element: <CoursesPage />,
+        element: <AuthGuard>
+            <CoursesPage />
+        </AuthGuard>,
     },
     {
         path: "/quests",
-        element: <QuestsPage />,
+        element:
+            <AuthGuard>
+                <QuestsPage />
+            </AuthGuard>,
     },
     {
         path: "*",

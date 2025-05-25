@@ -79,7 +79,23 @@ export const useAuth = create<AuthState>()(
             },
 
             checkIsAuthenticated: async () => {
+                try {
+                    set({ isLoading: true, error: null });
 
+                    const { data } = await axiosInstance.get("/api/auth/profile");
+
+                    set({
+                        user: data.data.user,
+                        isAuthenticated: true
+                    });
+                } catch (err) {
+                    set({
+                        user: null,
+                        isAuthenticated: false
+                    });
+                } finally {
+                    set({ isLoading: false });
+                }
             },
 
             clearError: () => set({ error: null }),
