@@ -17,6 +17,7 @@ type AuthUser = {
     agility: number;
     strength: number;
     dailyQuestsCompleted: number;
+    role: string
 };
 
 

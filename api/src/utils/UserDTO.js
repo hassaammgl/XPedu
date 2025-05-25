@@ -12,6 +12,7 @@ export class UserDto {
             agility: user.agility,
             mana: user.mana,
             dailyQuestsCompleted: user.dailyQuestsCompleted,
+            role: user.role
             // shadowsUnlocked: user.shadowsUnlocked
         }
     }

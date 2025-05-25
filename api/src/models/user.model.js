@@ -43,7 +43,12 @@ const userSchema = new mongoose.Schema({
   agility: { type: Number, default: 10 },
   mana: { type: Number, default: 100 },
   lastBattle: Date,
-  dailyQuestsCompleted: { type: Number, default: 0 }
+  dailyQuestsCompleted: { type: Number, default: 0 },
+  role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    }
 });
 
 userSchema.pre('save', async function (next) {

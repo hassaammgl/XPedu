@@ -5,7 +5,7 @@ import {
     logoutUser,
     getUserProfile,
     refreshToken
-} from '../controllers/auth.controllers';
+} from '../controllers/auth.controller';
 import { protect } from '../middlewares/auth.middleware';
 import { validateRequest } from '../middlewares/validation.middleware';
 import { registerSchema, loginSchema } from '../validations/auth.validation';

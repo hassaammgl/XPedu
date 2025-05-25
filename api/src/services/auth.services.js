@@ -4,6 +4,20 @@ import { TokenService } from '../utils/Jwt';
 import { UserDto } from "../utils/UserDTO.js"
 
 export class AuthService {
+    static async adminLogin(email, password) {
+        const user = await User.findOne({ email, role: 'admin' }).select('+password');
+
+        if (!user || !(await user.verifyPassword(password))) {
+            throw new AppError('Invalid admin credentials', 401);
+        }
+
+        const tokens = await this.generateAuthTokens(user._id.toString());
+
+        return {
+            user: new UserDto(user),
+            ...tokens
+        };
+    }
     static async generateAuthTokens(userId) {
         const accessToken = TokenService.generateAccessToken(userId);
         const refreshToken = TokenService.generateRefreshToken(userId);

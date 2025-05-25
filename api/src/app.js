@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth.routes";
 import { errorHandler } from "./middlewares/error.middleware";
 import morgan from "morgan";
 import { ENVS } from "./config/constants";
+import adminRoutes from './routes/admin.routes';
 
 const app = express();
 
@@ -25,7 +26,8 @@ app.use(
 );
 
 // Routes
-app.use("/api/auth", authRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
