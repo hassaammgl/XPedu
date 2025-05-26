@@ -5,7 +5,8 @@ import SettingsPage from "@/pages/SettingsPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import HomePage from "@/pages/HomePage";
 import DashboardPage from "@/pages/DashboardPage";
-import CoursesPage from "@/pages/CoursesPage";
+import CoursesPage from "@/pages/Courses/CoursesPage";
+import CourseDetails from "@/pages/Courses/CourseDetails";
 import QuestsPage from "@/pages/QuestsPage";
 import { AuthGuard } from "@/routes/AuthGuard";
 import { AdminGuard } from "@/routes/AdminGuard";
@@ -58,6 +59,14 @@ const routes = [
 		element: (
 			<AuthGuard>
 				<CoursesPage />
+			</AuthGuard>
+		),
+	},
+	{
+		path: "/courses/:courseid",
+		element: (
+			<AuthGuard>
+				<CourseDetails/>
 			</AuthGuard>
 		),
 	},
