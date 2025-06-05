@@ -31,7 +31,7 @@ export const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const { user, accessToken, refreshToken } = await AuthService.login(email, password);
-        
+
         TokenService.setTokens(res, { accessToken, refreshToken });
 
         return ApiResponse.success(res, {
@@ -52,10 +52,10 @@ export const refreshToken = async (req, res, next) => {
     try {
         const refreshToken = req.cookies.refreshToken;
         const { user, accessToken, refreshToken: newRefreshToken } = await AuthService.refreshToken(refreshToken);
-        
-        TokenService.setTokens(res, { 
-            accessToken, 
-            refreshToken: newRefreshToken 
+
+        TokenService.setTokens(res, {
+            accessToken,
+            refreshToken: newRefreshToken
         });
 
         return ApiResponse.success(res, {
@@ -76,7 +76,7 @@ export const logoutUser = async (req, res, next) => {
     try {
         await AuthService.logout(req.user._id);
         TokenService.clearTokens(res);
-        
+
         return ApiResponse.success(res, {
             message: 'Logged out successfully'
         });

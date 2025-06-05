@@ -45,10 +45,17 @@ const userSchema = new mongoose.Schema({
   lastBattle: Date,
   dailyQuestsCompleted: { type: Number, default: 0 },
   role: {
-        type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
+  completedCourses: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Course",
+
     }
+  ]
 });
 
 userSchema.pre('save', async function (next) {

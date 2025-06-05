@@ -4,8 +4,11 @@ import { Bell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { BookUser, LayoutDashboard, Trophy } from "lucide-react";
+import { useAuth } from "@/store/auth";
 
 const DashboardPage = () => {
+	const { user } = useAuth();
+
 	return (
 		<AppLayout>
 			<main className="flex-1 p-4 md:p-6">
@@ -18,10 +21,12 @@ const DashboardPage = () => {
 							<LayoutDashboard className="h-4 w-4 text-muted-foreground" />
 						</CardHeader>
 						<CardContent>
-							<div className="text-2xl font-bold">Level 5</div>
-							<Progress value={75} className="mt-2" />
+							<div className="text-2xl font-bold">
+								Level {user?.level}
+							</div>
+							<Progress value={user?.xp} className="mt-2" />
 							<p className="text-xs text-muted-foreground mt-2">
-								750/1000 XP to next level
+								{user?.xp}/1000 XP to next level
 							</p>
 						</CardContent>
 					</Card>

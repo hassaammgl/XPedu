@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-const lessonSchema = new mongoose.Schema({
+const testSchema = new mongoose.Schema({
     courseId: {
-        type: mongoose.Schema.ObjectId,
+        type: String,
         required: true,
     },
     title: {
@@ -24,8 +24,8 @@ const lessonSchema = new mongoose.Schema({
 
 })
 
-const Lesson = mongoose.model('Lessons', lessonSchema);
-export default Lesson;
+const Test = mongoose.model('Test', testSchema);
+export default Test;
 
 /**
  * 

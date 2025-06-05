@@ -6,7 +6,7 @@ export class TokenService {
     static generateAccessToken(id) {
         try {
             return jwt.sign({ id }, ENVS.JWT_SECRET, {
-                expiresIn: '15m' // Short lived access token
+                expiresIn: '2h'
             });
         } catch (error) {
             throw new AppError('Error generating access token', 500);
@@ -18,9 +18,9 @@ export class TokenService {
             if (!ENVS.JWT_REFRESH_SECRET) {
                 throw new Error('JWT_REFRESH_SECRET is not defined in environment variables');
             }
-            
+
             return jwt.sign({ id }, ENVS.JWT_REFRESH_SECRET, {
-                expiresIn: '7d' // Longer lived refresh token
+                expiresIn: '7d'
             });
         } catch (error) {
             console.error('Refresh Token Error:', {
@@ -61,20 +61,18 @@ export class TokenService {
     }
 
     static setTokens(res, { accessToken, refreshToken }) {
-        // Set access token in cookie
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
             secure: ENVS.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 15 * 60 * 1000 // 15 minutes
+            maxAge: 15 * 60 * 1000
         });
 
-        // Set refresh token in cookie
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: ENVS.NODE_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000 
         });
     }
 

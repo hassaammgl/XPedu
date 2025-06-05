@@ -10,10 +10,8 @@ export const protect = async (req, res, next) => {
             throw new AppError('Access token is required', 401);
         }
 
-        // Verify access token
         const decoded = TokenService.verifyAccessToken(accessToken);
         
-        // Get user
         const user = await User.findById(decoded.id).select('-password -refreshToken');
         if (!user) {
             throw new AppError('User not found', 404);
